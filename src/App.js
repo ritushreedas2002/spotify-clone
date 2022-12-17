@@ -9,49 +9,24 @@ import {useDataLayerValue} from './DataLayer';
 //object that makes sure about the interaction between our react app and spotifyapp...
 const spotify = new SpotifyWebApi();
 
-const App = () => {
-  console.log(spotify);
-    //BEM CONVENTION
-    
-    
-    const [{ user,token}, dispatch] = useDataLayerValue();
+function App() {
+  const [{ user,token }, dispatch] = useDataLayerValue();
 
   useEffect(() => {
     // Set token
     const hash = getTokenFromUrl();
     window.location.hash = "";
-    const _token = hash.access_token;
+    let _token = hash.access_token;
 
-  
     if (_token) {
+      spotify.setAccessToken(_token);
 
       dispatch({
-        type:'SET_TOKEN',
-        token:_token,
-      })
-
-      
-      spotify.setAccessToken(_token);
-      spotify.getMe().then((user) => {
-        
-        dispatch({
-          type:'SET_USER',
-          user:user,
-        })
-      });
-      spotify.getUserPlaylists().then((playlists)=>{
-        dispatch({
-          type:'SET_PLAYLISTS',
-          playlists:playlists,
-        });
-      });
-    }
-      /*dispatch({
         type: "SET_TOKEN",
         token: _token,
       });
 
-      /*spotify.getPlaylist("37i9dQZEVXcJZyENOWUFo7").then((response) =>
+      spotify.getPlaylist("4B4it4MfdOu1eCqDONZD25").then((response) =>
         dispatch({
           type: "SET_DISCOVER_WEEKLY",
           discover_weekly: response,
@@ -63,43 +38,39 @@ const App = () => {
           type: "SET_TOP_ARTISTS",
           top_artists: response,
         })
-      );*/
+      );
 
-      /*dispatch({
+      dispatch({
         type: "SET_SPOTIFY",
         spotify: spotify,
-      });*/
+      });
 
-      /*spotify.getMe().then((user) => {
-        console.log(user);
+      spotify.getMe().then((user) => {
         dispatch({
           type: "SET_USER",
-          user:user,
+          user,
         });
-      });*/
-    
-      /*spotify.getUserPlaylists().then((playlists) => {
+      });
+
+      spotify.getUserPlaylists().then((playlists) => {
         dispatch({
           type: "SET_PLAYLISTS",
-          playlists:playlists,
+          playlists,
         });
-      });*/
-    
-
+      });
+      
+    }
   }, []);
 
   
     
   return (
     <div className="app">
-      <h1></h1>
-      {/*<Login/><Player spotify={spotify}/>*/}
-       {/* {token?<Player spotify={spotify}/>:</Login>} */}
-        
-        
 
-    </div>
+      {token?<Player spotify={spotify}/>:<Login/>}
+      
+      </div>
   );
-}
+  }
 
 export default App;
